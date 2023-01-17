@@ -2,7 +2,10 @@ package com.guenodev.snapshotFinance.integrationTest.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.guenodev.snapshotFinance.controller.UserControler;
+import com.guenodev.snapshotFinance.dto.UserDtoRegistration;
+import com.guenodev.snapshotFinance.dto.UserDtoUserData;
 import com.guenodev.snapshotFinance.entity.Users;
+import com.guenodev.snapshotFinance.enums.MessageRegistration;
 import com.guenodev.snapshotFinance.service.UserService;
 
 import org.junit.jupiter.api.Assertions;
@@ -41,12 +44,13 @@ class UserControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    Users users;
+    UserDtoRegistration users;
+
 
 
     @BeforeEach
     void setup() {
-        users = new Users(1, "Joao Carvalho", "joaoc@outlook.com", "12345", false);
+        users = new UserDtoRegistration("Joao Carvalho", "joaoc@outlook.com", "12345");
 
     }
 
@@ -54,7 +58,8 @@ class UserControllerTest {
     @DisplayName("Should execute user registration")
     public void shouldExecuteUserRegistration() throws Exception {
 
-        when(userService.userRegistration(any())).thenReturn(users);
+        when(userService.userRegistration(users)).thenReturn(MessageRegistration.SUCCESSFUL_REGISTRATION);
+
 
         MvcResult result = mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -70,10 +75,7 @@ class UserControllerTest {
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(users.getName(), responseObj.getName()),
-                () -> Assertions.assertEquals(users.getEmail(), responseObj.getEmail()),
-                () -> Assertions.assertEquals(users.getSenha(), responseObj.getSenha()
-                )
-        );
+                () -> Assertions.assertEquals(users.getEmail(), responseObj.getEmail()));
 
     }
 }

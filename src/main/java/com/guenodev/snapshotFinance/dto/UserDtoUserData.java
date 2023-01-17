@@ -1,5 +1,6 @@
 package com.guenodev.snapshotFinance.dto;
 
+import com.guenodev.snapshotFinance.entity.Users;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
@@ -12,11 +13,9 @@ public class UserDtoUserData {
     private String email;
 
 
-
-
-    public UserDtoUserData(String name, String email) {
-        this.name = name;
-        this.email = email;
+    public UserDtoUserData(Users users) {
+        this.name = users.getName();
+        this.email = users.getEmail();
 
 
     }
