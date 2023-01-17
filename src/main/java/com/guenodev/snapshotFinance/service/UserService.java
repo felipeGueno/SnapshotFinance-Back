@@ -1,5 +1,6 @@
 package com.guenodev.snapshotFinance.service;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 import com.guenodev.snapshotFinance.dto.UserDtoRegistration;
 import com.guenodev.snapshotFinance.dto.UserDtoUserData;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -23,12 +25,18 @@ public class UserService {
     @Autowired
     private GroupService groupService;
 
+    /** Verify existent email
+     * Cripto Pass
+     * Register User
+     * */
 
 
     public MessageRegistration userRegistration(UserDtoRegistration userDtoRegistration) {
 
-        return Optional.ofNullable(userDtoRegistration).map(userDtoRegistration1 -> tryRegister(userDtoRegistration)).orElseThrow();
 
+        return  Optional.ofNullable(userDtoRegistration)
+                .map(userDtoRegistration1 -> tryRegister(userDtoRegistration))
+                .orElse(MessageRegistration.EMPTY_DATA);
 
     }
     private MessageRegistration tryRegister(UserDtoRegistration userDtoRegistration) {
@@ -38,15 +46,22 @@ public class UserService {
                         userRepository.save(new Users(null,
                         userDtoRegistration.getName(),
                         userDtoRegistration.getEmail(),
-                        userDtoRegistration.getSenha(),
+                        bcryptPass(userDtoRegistration.getSenha()),
                         false));
             }
-        } catch (RegistrationException e) {
+        }catch (NoSuchElementException n){
+            return MessageRegistration.EMPTY_EMAIL;
+        }
+        catch (RegistrationException e) {
             return MessageRegistration.EMAIL_EXISTS;
         }
         return MessageRegistration.SUCCESSFUL_REGISTRATION;
     }
 
+    private String bcryptPass(String email) {
+
+        return BCrypt.withDefaults().hashToString(12,email.toCharArray());
+    }
 
     public boolean existsByEmail(String email) throws RegistrationException {
 

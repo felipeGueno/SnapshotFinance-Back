@@ -23,19 +23,17 @@ public class UserControler {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<Object> userRegistration(@RequestBody @Valid UserDtoRegistration userDto) throws RegistrationException {
+    public ResponseEntity<Object> userRegistration(@RequestBody @Valid UserDtoRegistration userDto) {
 
         MessageRegistration messageRegistration = userService.userRegistration(userDto);
-        if(messageRegistration.equals(MessageRegistration.EMAIL_EXISTS)){
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(messageRegistration.getMessage());
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(messageRegistration.getMessage());
+
+        return ResponseEntity.status(messageRegistration.getHttpStatus()).body(messageRegistration.getMessage());
 
     }
 
     @GetMapping
     public ResponseEntity<List<UserDtoUserData>> allUsersList() {
         userService.usersList();
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.usersList());
+        return ResponseEntity.status(HttpStatus.OK).body(userService.usersList());
     }
 }
