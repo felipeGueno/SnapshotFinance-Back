@@ -4,6 +4,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 
 import com.guenodev.snapshotFinance.dto.UserDtoRegistration;
 import com.guenodev.snapshotFinance.dto.UserDtoUserData;
+import com.guenodev.snapshotFinance.entity.ExpenseGroup;
 import com.guenodev.snapshotFinance.entity.Users;
 import com.guenodev.snapshotFinance.enums.MessageRegistration;
 import com.guenodev.snapshotFinance.exceptions.RegistrationException;
@@ -33,29 +34,22 @@ public class UserService {
 
     public MessageRegistration userRegistration(UserDtoRegistration userDtoRegistration) {
 
-
-        return  Optional.ofNullable(userDtoRegistration)
-                .map(userDtoRegistration1 -> tryRegister(userDtoRegistration))
-                .orElse(MessageRegistration.EMPTY_DATA);
-
-    }
-    private MessageRegistration tryRegister(UserDtoRegistration userDtoRegistration) {
-
         try {
-            if (existsByEmail(Optional.ofNullable(userDtoRegistration.getEmail()).orElseThrow())) {
-                        userRepository.save(new Users(null,
-                        userDtoRegistration.getName(),
-                        userDtoRegistration.getEmail(),
-                        bcryptPass(userDtoRegistration.getSenha()),
-                        false));
+
+            if (Optional.ofNullable(userDtoRegistration.getEmail()).isPresent()){
+                existsByEmail(userDtoRegistration.getEmail());
             }
-        }catch (NoSuchElementException n){
-            return MessageRegistration.EMPTY_EMAIL;
+        } catch (RegistrationException e){
+            return e.getMessageRegistration();
         }
-        catch (RegistrationException e) {
-            return MessageRegistration.EMAIL_EXISTS;
-        }
+
+        userRepository.save(new Users(null,
+                userDtoRegistration.getName(),
+                userDtoRegistration.getEmail(),
+                bcryptPass(userDtoRegistration.getSenha())));
+
         return MessageRegistration.SUCCESSFUL_REGISTRATION;
+
     }
 
     private String bcryptPass(String email) {
@@ -63,14 +57,11 @@ public class UserService {
         return BCrypt.withDefaults().hashToString(12,email.toCharArray());
     }
 
-    public boolean existsByEmail(String email) throws RegistrationException {
-
+    public void existsByEmail(String email) throws RegistrationException {
         if(userRepository.existsByEmail(email)){
-            throw new RegistrationException();
+            throw new RegistrationException(MessageRegistration.EMAIL_EXISTS);
         }
-        return true;
     }
-
     public List<UserDtoUserData> usersList() {
         List<UserDtoUserData> usersList = new ArrayList<>();
         userRepository.findAll().forEach(user -> usersList.add(new UserDtoUserData(user)));

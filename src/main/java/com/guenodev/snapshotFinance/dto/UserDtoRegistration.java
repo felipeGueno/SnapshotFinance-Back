@@ -8,11 +8,11 @@ import lombok.Getter;
 public class UserDtoRegistration {
 
     @NotBlank
-    private String name;
+    private final String name;
     @NotBlank
-    private String email;
+    private final String email;
     @NotBlank
-    private String senha;
+    private final String senha;
 
 
     public UserDtoRegistration(String name, String email, String senha) {

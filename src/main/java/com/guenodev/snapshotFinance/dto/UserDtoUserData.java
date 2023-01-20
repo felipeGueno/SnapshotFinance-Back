@@ -4,18 +4,21 @@ import com.guenodev.snapshotFinance.entity.Users;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Getter
 public class UserDtoUserData {
 
-    @NotBlank
+    private UUID id;
     private String name;
-    @NotBlank
+
     private String email;
 
 
     public UserDtoUserData(Users users) {
         this.name = users.getName();
         this.email = users.getEmail();
+        this.id = users.getId();
 
 
     }
