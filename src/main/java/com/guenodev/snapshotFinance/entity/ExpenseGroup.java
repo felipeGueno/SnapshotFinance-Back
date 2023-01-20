@@ -2,11 +2,11 @@ package com.guenodev.snapshotFinance.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
+
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.ArrayList;
+
 import java.util.UUID;
 import java.util.List;
 
@@ -25,7 +25,8 @@ public class ExpenseGroup {
     @ManyToOne
     private Users userAdm;
 
-    @ManyToMany
+    @NotNull
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Users> users;
 
     public ExpenseGroup(UUID id, String group_name, Users userAdm,  List<Users> users) {

@@ -1,5 +1,6 @@
 package com.guenodev.snapshotFinance.service;
 
+import com.guenodev.snapshotFinance.dto.ExpenseGroupDtoDataReturn;
 import com.guenodev.snapshotFinance.dto.ExpenseGroupDtoRegistration;
 import com.guenodev.snapshotFinance.entity.ExpenseGroup;
 import com.guenodev.snapshotFinance.entity.Users;
@@ -44,11 +45,11 @@ public class GroupService {
             return e.getMessageRegistration();
         }
 
-        groupRepository.save(new ExpenseGroup(
-                null,
-                groupName,
-                userAdm,
-                addAdmToGroup(userAdm)));
+        groupRepository.save(ExpenseGroup.builder()
+                .group_name(groupName)
+                .userAdm(userAdm)
+                .users(addAdmToGroup(userAdm))
+                .build());
 
         return MessageRegistration.SUCCESSFUL_REGISTRATION;
 
@@ -81,4 +82,9 @@ public class GroupService {
     }
 
 
+    public List<ExpenseGroupDtoDataReturn> getAllExpenseGroups() {
+        List<ExpenseGroupDtoDataReturn> expenseGroupList = new ArrayList<>();
+        groupRepository.findAll().forEach(group -> expenseGroupList.add(new ExpenseGroupDtoDataReturn(group.getGroup_name(), group.getUserAdm().getName(), group.getUsers())));
+        return expenseGroupList;
+    }
 }

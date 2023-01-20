@@ -3,8 +3,7 @@ package com.guenodev.snapshotFinance.service;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 
 import com.guenodev.snapshotFinance.dto.UserDtoRegistration;
-import com.guenodev.snapshotFinance.dto.UserDtoUserData;
-import com.guenodev.snapshotFinance.entity.ExpenseGroup;
+import com.guenodev.snapshotFinance.dto.UserDtoDataReturn;
 import com.guenodev.snapshotFinance.entity.Users;
 import com.guenodev.snapshotFinance.enums.MessageRegistration;
 import com.guenodev.snapshotFinance.exceptions.RegistrationException;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -43,10 +41,11 @@ public class UserService {
             return e.getMessageRegistration();
         }
 
-        userRepository.save(new Users(null,
-                userDtoRegistration.getName(),
-                userDtoRegistration.getEmail(),
-                bcryptPass(userDtoRegistration.getSenha())));
+        userRepository.save(Users.builder()
+                .name(userDtoRegistration.getName())
+                .email(userDtoRegistration.getEmail())
+                .senha(bcryptPass(userDtoRegistration.getSenha()))
+                .build());
 
         return MessageRegistration.SUCCESSFUL_REGISTRATION;
 
@@ -62,9 +61,9 @@ public class UserService {
             throw new RegistrationException(MessageRegistration.EMAIL_EXISTS);
         }
     }
-    public List<UserDtoUserData> usersList() {
-        List<UserDtoUserData> usersList = new ArrayList<>();
-        userRepository.findAll().forEach(user -> usersList.add(new UserDtoUserData(user)));
+    public List<UserDtoDataReturn> usersList() {
+        List<UserDtoDataReturn> usersList = new ArrayList<>();
+        userRepository.findAll().forEach(user -> usersList.add(new UserDtoDataReturn(user)));
         return usersList;
     }
 

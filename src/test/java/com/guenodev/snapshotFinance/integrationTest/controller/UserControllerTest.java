@@ -3,8 +3,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.guenodev.snapshotFinance.controller.UserControler;
 import com.guenodev.snapshotFinance.dto.UserDtoRegistration;
-import com.guenodev.snapshotFinance.dto.UserDtoUserData;
-import com.guenodev.snapshotFinance.entity.Users;
 import com.guenodev.snapshotFinance.enums.MessageRegistration;
 import com.guenodev.snapshotFinance.service.UserService;
 
@@ -12,16 +10,11 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
 
 import static org.mockito.ArgumentMatchers.any;

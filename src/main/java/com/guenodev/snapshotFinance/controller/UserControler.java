@@ -1,10 +1,8 @@
 package com.guenodev.snapshotFinance.controller;
 
 import com.guenodev.snapshotFinance.dto.UserDtoRegistration;
-import com.guenodev.snapshotFinance.dto.UserDtoUserData;
-import com.guenodev.snapshotFinance.entity.Users;
+import com.guenodev.snapshotFinance.dto.UserDtoDataReturn;
 import com.guenodev.snapshotFinance.enums.MessageRegistration;
-import com.guenodev.snapshotFinance.exceptions.RegistrationException;
 import com.guenodev.snapshotFinance.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +30,7 @@ public class UserControler {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserDtoUserData>> allUsersList() {
+    public ResponseEntity<List<UserDtoDataReturn>> allUsersList() {
         userService.usersList();
         return ResponseEntity.status(HttpStatus.OK).body(userService.usersList());
     }
